@@ -3335,6 +3335,7 @@ class WebGLRenderer {
 		var geometry:Geometry = object.geometry,
 			geometryGroup:Geometry, customAttributesDirty:Bool, material:Material;
 
+		material = new Material();
 		if (Std.is(geometry, BufferGeometry)) {
 			setDirectBuffers(geometry, GL.DYNAMIC_DRAW, !geometry.isDynamic);
 
@@ -3367,11 +3368,12 @@ class WebGLRenderer {
 
 			geometry.buffersNeedUpdate = false;
 
-			if(Reflect.field(material, "attributes") != null) clearCustomAttributes(cast material);
+			if(Reflect.field(material, "attributes") != null){
+				clearCustomAttributes(cast material);
+			}
 
 		} else if (Std.is(object, Line)) {
-			material = getBufferMaterial(object, geometry);
-
+			material = getBufferMaterial(cast object, geometry);
 			customAttributesDirty = Reflect.field(material, "attributes") != null && areCustomAttributesDirty(cast material);
 
 			if (geometry.verticesNeedUpdate || geometry.colorsNeedUpdate || geometry.lineDistancesNeedUpdate || customAttributesDirty) {
@@ -3381,13 +3383,14 @@ class WebGLRenderer {
 			geometry.verticesNeedUpdate = false;
 			geometry.colorsNeedUpdate = false;
 			geometry.lineDistancesNeedUpdate = false;
-
-			material.attributes && clearCustomAttributes(material);
-
-		} else if (Std.is(object, ParticleSystem)) {
-			material = getBufferMaterial(object, geometry);
+			if(Reflect.field(material, "attributes") != null){
+				clearCustomAttributes(cast material);
+			}
+		}/* else if (Std.is(object, ParticleSystem)) {
+			material = getBufferMaterial(cast object, geometry);
 
 			customAttributesDirty = Reflect.field(material, "attributes") != null && areCustomAttributesDirty(cast material);
+			//object.sortParticles = Reflect.field(object, "sortParticles") != null ;
 
 			if (geometry.verticesNeedUpdate || geometry.colorsNeedUpdate || object.sortParticles || customAttributesDirty) {
 				setParticleBuffers(geometry, GL.DYNAMIC_DRAW, object);
@@ -3396,8 +3399,8 @@ class WebGLRenderer {
 			geometry.verticesNeedUpdate = false;
 			geometry.colorsNeedUpdate = false;
 
-			material.attributes && clearCustomAttributes(material);
-		}
+			if(Reflect.field(material, "attributes") != null) clearCustomAttributes(cast material);
+		}*/
 	}
 
 	// Objects updates - custom attributes check
